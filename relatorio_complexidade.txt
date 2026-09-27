@@ -1,10 +1,10 @@
 ================================================================================
           UNIPÊ - COMPLEXIDADE E COMPUTABILIDADE DE ALGORITMO
                          PROFESSOR: HERRIOTR
-                       PROJETO DA AVALIAÇÃO 01
+                            AVALIAÇÃO 01
 ================================================================================
 
-INTEGRANTES DO GRUPO (5 Membros):
+INTEGRANTES DO GRUPO:
 1. Pedro
 2. Paulo
 3. João
@@ -12,165 +12,241 @@ INTEGRANTES DO GRUPO (5 Membros):
 5. Lucas
 
 ================================================================================
-1. PARÂMETROS GERAIS DA ANÁLISE DE TEMPO
+1. CRITÉRIOS DA ANÁLISE
 ================================================================================
-- Linguagem de Programação Utilizada: Linguagem C (Padrão C99) - Estrutura Modular
-- Capacidade do Computador: 10^8 (100.000.000) instruções por segundo.
-- Fórmula do Tempo: Tempo (segundos) = Total de Instruções / 10^8 ops/s.
-
-================================================================================
-2. ESTRUTURA DO PROJETO E ARQUIVOS DE ENTREGA
-================================================================================
-
-Avaliação CCA/
-├── main.c                          # Menu principal interativo em C
-├── relatorio_complexidade.md       # Relatório detalhado em Markdown (Pseudocódigos e equações)
-├── relatorio_complexidade.txt       # Arquivo de texto puro com Pseudocódigos em Portugol e cálculos
-└── funcoes/                        # Pasta contendo exatamente os 5 arquivos .c do PDF
-    ├── funcao1.c                   # Função 1: Contagem de Ocorrências Distintas
-    ├── funcao2.c                   # Função 2: Análise de Pares em Matriz Triangular
-    ├── funcao3.c                   # Função 3: Comparação de Matrizes Tridimensionais
-    ├── funcao4.c                   # Função 4: Análise de Casos Assimétricos
-    └── funcao5.c                   # Função 5: Busca Binária em Vetor Ordenado
+- Linguagem: C. Todo o código está no arquivo main.c.
+- Cada linha do pseudocódigo executada custa 1 instrução.
+- Um laço "para" que repete x vezes tem a linha do cabeçalho executada
+  x + 1 vezes (a última é o teste que encerra o laço). O mesmo vale para o
+  "enquanto".
+- A análise é sempre do PIOR CASO, e todas as 5 funções usam o mesmo método:
+  T(n) é a soma dos custos de todas as linhas.
+- Computador de 10^8 instruções por segundo:
+      Tempo (s) = T(n) / 10^8
 
 ================================================================================
-3. ANÁLISE DETALHADA DAS 5 FUNÇÕES
+FUNÇÃO 1: Contagem de ocorrências
 ================================================================================
+Pior caso: todo V[j] é igual a K_vec[i], então o "se" é sempre verdadeiro.
 
+Pseudocódigo                                        Custo (nº de execuções)
 --------------------------------------------------------------------------------
-FUNÇÃO 1: Contagem de Ocorrências Distintas (funcoes/funcao1.c)
+função contagem_ocorrencias(V, n, K_vec, k):
+ 1  soma_total <- 0                                 1
+ 2  para i <- 0 até k-1 faça                        k + 1
+ 3      contador <- 0                               k
+ 4      para j <- 0 até n-1 faça                    k(n + 1) = kn + k
+ 5          se V[j] = K_vec[i] então                kn
+ 6              contador <- contador + 1            kn
+        fim_se
+    fim_para
+ 7      soma_total <- soma_total + contador         k
+    fim_para
+ 8  retorne soma_total                              1
+fim_função
+
+T(n, k) = 1 + (k + 1) + k + (kn + k) + kn + kn + k + 1
+T(n, k) = 3kn + 4k + 3
+
+Big-O: O(k·n)
+
+Tempo para n = 50.000 e k = 4.000:
+  T = 3·(4.000·50.000) + 4·4.000 + 3
+    = 600.000.000 + 16.000 + 3
+    = 600.016.003 instruções
+  Tempo = 600.016.003 / 10^8 ≈ 6,00 segundos
+
+================================================================================
+FUNÇÃO 2: Pares em matriz triangular
+================================================================================
+Pior caso: toda soma A[i][j] + A[j][i] é múltipla de 5.
+
+O laço interno começa em j = i, então para cada i ele repete (n - i) vezes:
+  soma das repetições = n + (n-1) + ... + 1 = n(n+1)/2
+  cabeçalho do laço interno = soma de (n - i + 1) = n(n+1)/2 + n = n(n+3)/2
+
+Pseudocódigo                                        Custo (nº de execuções)
 --------------------------------------------------------------------------------
-Pseudocódigo:
-    função contagem_ocorrencias(V, n, K_vec, k):
-        soma_total <- 0                       // c1 (1 vez)
-        para i <- 0 até k-1 faça             // c2 (k + 1 vezes)
-            contador <- 0                     // c3 (k vezes)
-            para j <- 0 até n-1 faça         // c4 (k * (n + 1) vezes)
-                se V[j] == K_vec[i] então     // c5 (k * n vezes)
-                    contador <- contador + 1  // c6 (k * n vezes no pior caso)
-                fim_se
-            fim_para
-            soma_total <- soma_total + contador // c7 (k vezes)
-        fim_para
-        retorne soma_total                   // c8 (1 vez)
-    fim_funcao
-
-Expressão T(n, k): T(n, k) = A * k * n + B * k + C
-Big-O: O(k * n)
-Cálculo de Tempo (n=50.000, k=4.000): Tempo Teórico = 2,00 segundos.
-
---------------------------------------------------------------------------------
-FUNÇÃO 2: Análise de Pares em Matriz Triangular (funcoes/funcao2.c)
---------------------------------------------------------------------------------
-Pseudocódigo:
-    função analise_triangular(A, n):
-        contador <- 0                           // c1 (1 vez)
-        para i <- 0 até n-1 faça                 // c2 (n + 1 vezes)
-            para j <- i até n-1 faça             // c3 (n(n+3)/2 vezes)
-                soma <- A[i][j] + A[j][i]        // c4 (n(n+1)/2 vezes)
-                se soma % 5 == 0 então           // c5 (n(n+1)/2 vezes)
-                    contador <- contador + 1      // c6 (n(n+1)/2 vezes)
-                fim_se
-            fim_para
-        fim_para
-        retorne contador                       // c7 (1 vez)
-    fim_funcao
-
-Expressão T(n): T(n) = A * n^2 + B * n + C
-Big-O: O(n^2)
-Cálculo de Tempo (n=500): Tempo Teórico = 0,00626 segundos (6,26 ms).
-
---------------------------------------------------------------------------------
-FUNÇÃO 3: Comparação de Matrizes Tridimensionais (funcoes/funcao3.c)
---------------------------------------------------------------------------------
-Pseudocódigo:
-    função comparacao_3d(A, B, n):
-        somaA <- 0
-        para i <- 0 até n-1 faça
-            para j <- 0 até n-1 faça
-                para k <- 0 até n-1 faça
-                    somaA <- somaA + A[i][j][k]
-                fim_para
-            fim_para
-        fim_para
-
-        somaB <- 0
-        para i <- 0 até n-1 faça
-            para j <- 0 até n-1 faça
-                para k <- 0 até n-1 faça
-                    somaB <- somaB + B[i][j][k]
-                fim_para
-            fim_para
-        fim_para
-
-        se somaA >= somaB então retorne 1 senão retorne 0 fim_se
-    fim_funcao
-
-Expressão T(n): T(n) = A * n^3 + B * n^2 + C * n + D
-Big-O: O(n^3)
-Cálculo de Tempo (n=300): Tempo Teórico = 1,08 segundos.
-
---------------------------------------------------------------------------------
-FUNÇÃO 4 (REFEITA): Análise de Casos Assimétricos (funcoes/funcao4.c)
---------------------------------------------------------------------------------
-Pseudocódigo:
-    função processar_vetor(V, n):
-        somatorio <- 0                           // c1 (1 vez)
-        para i <- 0 até n-1 faça                 // c2 (n + 1 vezes)
-            se V[i] % 2 == 0 então               // c3 (n vezes)
-                somatorio <- somatorio + V[i]     // c4 (ramo par)
-            senão
-                fat <- 1                         // c5 (ramo ímpar)
-                para j <- 1 até V[i] faça        // c6 (V[i] + 1 vezes)
-                    fat <- fat * j               // c7 (V[i] vezes)
-                fim_para
-                somatorio <- somatorio + fat     // c8 (ramo ímpar)
+função analise_triangular(A, n):
+ 1  contador <- 0                                   1
+ 2  para i <- 0 até n-1 faça                        n + 1
+ 3      para j <- i até n-1 faça                    n(n+3)/2
+ 4          soma <- A[i][j] + A[j][i]               n(n+1)/2
+ 5          se soma mod 5 = 0 então                 n(n+1)/2
+ 6              contador <- contador + 1            n(n+1)/2
             fim_se
         fim_para
-        retorne somatorio                       // c9 (1 vez)
-    fim_funcao
+    fim_para
+ 7  retorne contador                                1
+fim_função
 
-Expressão T(n, m): T(n, m) = A * (n * m) + B * n + C
-Big-O: O(n) / O(n * m)
-Cálculo de Tempo (n=50.000 pior caso, m=20): Tempo Teórico = 0,010 segundos (10 ms).
+T(n) = 1 + (n + 1) + n(n+3)/2 + 3·n(n+1)/2 + 1
+     = n + 3 + (n² + 3n + 3n² + 3n)/2
+     = n + 3 + 2n² + 3n
+T(n) = 2n² + 4n + 3
 
+Big-O: O(n²)
+
+Tempo para n = 500:
+  T = 2·250.000 + 4·500 + 3
+    = 500.000 + 2.000 + 3
+    = 502.003 instruções
+  Tempo = 502.003 / 10^8 ≈ 0,00502 segundos (5,02 ms)
+
+================================================================================
+FUNÇÃO 3: Comparação de arranjos tridimensionais
+================================================================================
+Não há melhor nem pior caso: os dois arranjos são sempre percorridos inteiros.
+Pior caso do final: somaA >= somaB é falso, então executa o "retorne 0"
+(as duas saídas custam o mesmo).
+
+Pseudocódigo                                        Custo (nº de execuções)
 --------------------------------------------------------------------------------
-FUNÇÃO 5: Contagem de Elementos em Vetor Ordenado (funcoes/funcao5.c)
---------------------------------------------------------------------------------
-Pseudocódigo:
-    função busca_binaria(B, n, chave):
-        inicio <- 0; fim <- n - 1
-        enquanto inicio <= fim faça
-            meio <- inicio + (fim - inicio) / 2
-            se B[meio] == chave então retorne 1
-            senão se B[meio] < chave então inicio <- meio + 1
-            senão fim <- meio - 1
-            fim_se
-        fim_enquanto
-        retorne 0
-    fim_funcao
-
-    função contagem_elementos_ordenados(A, B, n):
-        total_encontrados <- 0
-        para i <- 0 até n-1 faça
-            encontrado <- busca_binaria(B, n, A[i])
-            total_encontrados <- total_encontrados + encontrado
+função comparacao_3d(A, B, n):
+ 1  somaA <- 0                                      1
+ 2  para i <- 0 até n-1 faça                        n + 1
+ 3      para j <- 0 até n-1 faça                    n(n + 1) = n² + n
+ 4          para k <- 0 até n-1 faça                n²(n + 1) = n³ + n²
+ 5              somaA <- somaA + A[i][j][k]         n³
+            fim_para
         fim_para
-        retorne total_encontrados
-    fim_funcao
+    fim_para
+ 6  somaB <- 0                                      1
+ 7  para i <- 0 até n-1 faça                        n + 1
+ 8      para j <- 0 até n-1 faça                    n² + n
+ 9          para k <- 0 até n-1 faça                n³ + n²
+10              somaB <- somaB + B[i][j][k]         n³
+            fim_para
+        fim_para
+    fim_para
+11  se somaA >= somaB então                         1
+12      retorne 1                                   0
+    senão
+13      retorne 0                                   1
+    fim_se
+fim_função
 
-Expressão T(n): T(n) = A * (n * log2(n)) + B * n + C
+Custo de um bloco (linhas 1 a 5):
+  1 + (n + 1) + (n² + n) + (n³ + n²) + n³ = 2n³ + 2n² + 2n + 2
+O bloco de B (linhas 6 a 10) custa o mesmo.
+
+T(n) = 2·(2n³ + 2n² + 2n + 2) + 2
+T(n) = 4n³ + 4n² + 4n + 6
+
+Big-O: O(n³)
+
+Tempo para n = 300:
+  T = 4·27.000.000 + 4·90.000 + 4·300 + 6
+    = 108.000.000 + 360.000 + 1.200 + 6
+    = 108.361.206 instruções
+  Tempo = 108.361.206 / 10^8 ≈ 1,08 segundos
+
+================================================================================
+FUNÇÃO 4: Casos assimétricos no condicional
+================================================================================
+Os valores do vetor são limitados a 0..20 (20! é o maior fatorial que cabe em
+um inteiro de 64 bits). O programa valida isso na leitura e recusa valores
+fora da faixa.
+
+Pior caso: todo V[i] é ímpar e igual a m = 19, o maior ímpar permitido
+(número par não calcula fatorial, por isso 20 não é o pior caso).
+
+Pseudocódigo                                        Custo (nº de execuções)
+--------------------------------------------------------------------------------
+função processar_vetor(V, n):
+ 1  somatorio <- 0                                  1
+ 2  para i <- 0 até n-1 faça                        n + 1
+ 3      se V[i] mod 2 = 0 então                     n
+ 4          somatorio <- somatorio + V[i]           0
+        senão
+ 5          fat <- 1                                n
+ 6          para j <- 1 até V[i] faça               n(m + 1) = nm + n
+ 7              fat <- fat · j                      nm
+            fim_para
+ 8          somatorio <- somatorio + fat            n
+        fim_se
+    fim_para
+ 9  retorne somatorio                               1
+fim_função
+
+T(n, m) = 1 + (n + 1) + n + 0 + n + (nm + n) + nm + n + 1
+T(n, m) = 2nm + 5n + 3
+
+Big-O: O(n·m). Como m é no máximo 19 (uma constante), fica O(n).
+
+Tempo para n = 50.000 e m = 19:
+  T = 2·50.000·19 + 5·50.000 + 3
+    = 1.900.000 + 250.000 + 3
+    = 2.150.003 instruções
+  Tempo = 2.150.003 / 10^8 ≈ 0,0215 segundos (21,5 ms)
+
+================================================================================
+FUNÇÃO 5: Elementos de A presentes no vetor ordenado B
+================================================================================
+Pior caso: nenhum elemento de A existe em B. Assim cada busca binária faz o
+número máximo de voltas e termina pelo "retorne 0".
+
+Número de voltas da busca binária no pior caso:
+  L = piso(log2 n) + 1
+
+5.1 Busca binária
+Pseudocódigo                                        Custo (nº de execuções)
+--------------------------------------------------------------------------------
+função busca_binaria(B, n, chave):
+ 1  inicio <- 0                                     1
+ 2  fim <- n - 1                                    1
+ 3  enquanto inicio <= fim faça                     L + 1
+ 4      meio <- inicio + (fim - inicio) div 2       L
+ 5      se B[meio] = chave então                    L
+ 6          retorne 1                               0
+ 7      senão se B[meio] < chave então              L
+ 8          inicio <- meio + 1                      L1
+        senão
+ 9          fim <- meio - 1                         L2   (L1 + L2 = L)
+        fim_se
+    fim_enquanto
+10  retorne 0                                       1
+fim_função
+
+Tb(n) = 1 + 1 + (L + 1) + L + L + 0 + L + L + 1
+Tb(n) = 5L + 4
+
+5.2 Função principal
+Pseudocódigo                                        Custo (nº de execuções)
+--------------------------------------------------------------------------------
+função elementos_ordenados(A, B, n):
+ 1  total <- 0                                      1
+ 2  para i <- 0 até n-1 faça                        n + 1
+ 3      se busca_binaria(B, n, A[i]) = 1 então      n + n·Tb(n)
+ 4          total <- total + 1                      0
+        fim_se
+    fim_para
+ 5  retorne total                                   1
+fim_função
+
+(A linha 3 custa 1 pelo teste do "se", mais o custo da chamada da busca.)
+
+T(n) = 1 + (n + 1) + n + n·(5L + 4) + 0 + 1
+T(n) = 5nL + 6n + 3,   com L = piso(log2 n) + 1
+
 Big-O: O(n log n)
-Cálculo de Tempo (n=10.000.000): Tempo Teórico = 2,33 segundos.
+
+Tempo para n = 10.000.000:
+  log2(10.000.000) ≈ 23,25, então L = 23 + 1 = 24
+  T = 5·10.000.000·24 + 6·10.000.000 + 3
+    = 1.200.000.000 + 60.000.000 + 3
+    = 1.260.000.003 instruções
+  Tempo = 1.260.000.003 / 10^8 ≈ 12,6 segundos
 
 ================================================================================
-4. TABELA RESUMO COMPARATIVA (C99 MODULAR)
+RESUMO
 ================================================================================
-Função    | Arquivo Fonte       | n (Cálculo)         | Big-O      | Tempo Estimado
---------------------------------------------------------------------------------
-Função 1  | funcoes/funcao1.c   | n=50.000, k=4.000   | O(k * n)   | 2,00 segundos
-Função 2  | funcoes/funcao2.c   | n=500               | O(n^2)     | 0,00626 s (6,26 ms)
-Função 3  | funcoes/funcao3.c   | n=300               | O(n^3)     | 1,08 segundos
-Função 4  | funcoes/funcao4.c   | n=50.000 (Pior Caso)| O(n)       | 0,010 s (10 ms)
-Função 5  | funcoes/funcao5.c   | n=10.000.000        | O(n log n) | 2,33 segundos
+Função | Entrada               | T(n)                  | Big-O     | Tempo
+-------+-----------------------+-----------------------+-----------+----------
+  1    | n = 50.000, k = 4.000 | 3kn + 4k + 3          | O(k·n)    | 6,00 s
+  2    | n = 500               | 2n² + 4n + 3          | O(n²)     | 5,02 ms
+  3    | n = 300               | 4n³ + 4n² + 4n + 6    | O(n³)     | 1,08 s
+  4    | n = 50.000, m = 19    | 2nm + 5n + 3          | O(n)      | 21,5 ms
+  5    | n = 10.000.000        | 5nL + 6n + 3          | O(n log n)| 12,6 s
+       |                       | L = piso(log2 n) + 1  |           |
 ================================================================================
