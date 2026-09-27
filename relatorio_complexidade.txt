@@ -1,0 +1,176 @@
+================================================================================
+          UNIPÊ - COMPLEXIDADE E COMPUTABILIDADE DE ALGORITMO
+                         PROFESSOR: HERRIOTR
+                       PROJETO DA AVALIAÇÃO 01
+================================================================================
+
+INTEGRANTES DO GRUPO (5 Membros):
+1. Pedro
+2. Paulo
+3. João
+4. Gabriel
+5. Lucas
+
+================================================================================
+1. PARÂMETROS GERAIS DA ANÁLISE DE TEMPO
+================================================================================
+- Linguagem de Programação Utilizada: Linguagem C (Padrão C99) - Estrutura Modular
+- Capacidade do Computador: 10^8 (100.000.000) instruções por segundo.
+- Fórmula do Tempo: Tempo (segundos) = Total de Instruções / 10^8 ops/s.
+
+================================================================================
+2. ESTRUTURA DO PROJETO E ARQUIVOS DE ENTREGA
+================================================================================
+
+Avaliação CCA/
+├── main.c                          # Menu principal interativo em C
+├── relatorio_complexidade.md       # Relatório detalhado em Markdown (Pseudocódigos e equações)
+├── relatorio_complexidade.txt       # Arquivo de texto puro com Pseudocódigos em Portugol e cálculos
+└── funcoes/                        # Pasta contendo exatamente os 5 arquivos .c do PDF
+    ├── funcao1.c                   # Função 1: Contagem de Ocorrências Distintas
+    ├── funcao2.c                   # Função 2: Análise de Pares em Matriz Triangular
+    ├── funcao3.c                   # Função 3: Comparação de Matrizes Tridimensionais
+    ├── funcao4.c                   # Função 4: Análise de Casos Assimétricos
+    └── funcao5.c                   # Função 5: Busca Binária em Vetor Ordenado
+
+================================================================================
+3. ANÁLISE DETALHADA DAS 5 FUNÇÕES
+================================================================================
+
+--------------------------------------------------------------------------------
+FUNÇÃO 1: Contagem de Ocorrências Distintas (funcoes/funcao1.c)
+--------------------------------------------------------------------------------
+Pseudocódigo:
+    função contagem_ocorrencias(V, n, K_vec, k):
+        soma_total <- 0                       // c1 (1 vez)
+        para i <- 0 até k-1 faça             // c2 (k + 1 vezes)
+            contador <- 0                     // c3 (k vezes)
+            para j <- 0 até n-1 faça         // c4 (k * (n + 1) vezes)
+                se V[j] == K_vec[i] então     // c5 (k * n vezes)
+                    contador <- contador + 1  // c6 (k * n vezes no pior caso)
+                fim_se
+            fim_para
+            soma_total <- soma_total + contador // c7 (k vezes)
+        fim_para
+        retorne soma_total                   // c8 (1 vez)
+    fim_funcao
+
+Expressão T(n, k): T(n, k) = A * k * n + B * k + C
+Big-O: O(k * n)
+Cálculo de Tempo (n=50.000, k=4.000): Tempo Teórico = 2,00 segundos.
+
+--------------------------------------------------------------------------------
+FUNÇÃO 2: Análise de Pares em Matriz Triangular (funcoes/funcao2.c)
+--------------------------------------------------------------------------------
+Pseudocódigo:
+    função analise_triangular(A, n):
+        contador <- 0                           // c1 (1 vez)
+        para i <- 0 até n-1 faça                 // c2 (n + 1 vezes)
+            para j <- i até n-1 faça             // c3 (n(n+3)/2 vezes)
+                soma <- A[i][j] + A[j][i]        // c4 (n(n+1)/2 vezes)
+                se soma % 5 == 0 então           // c5 (n(n+1)/2 vezes)
+                    contador <- contador + 1      // c6 (n(n+1)/2 vezes)
+                fim_se
+            fim_para
+        fim_para
+        retorne contador                       // c7 (1 vez)
+    fim_funcao
+
+Expressão T(n): T(n) = A * n^2 + B * n + C
+Big-O: O(n^2)
+Cálculo de Tempo (n=500): Tempo Teórico = 0,00626 segundos (6,26 ms).
+
+--------------------------------------------------------------------------------
+FUNÇÃO 3: Comparação de Matrizes Tridimensionais (funcoes/funcao3.c)
+--------------------------------------------------------------------------------
+Pseudocódigo:
+    função comparacao_3d(A, B, n):
+        somaA <- 0
+        para i <- 0 até n-1 faça
+            para j <- 0 até n-1 faça
+                para k <- 0 até n-1 faça
+                    somaA <- somaA + A[i][j][k]
+                fim_para
+            fim_para
+        fim_para
+
+        somaB <- 0
+        para i <- 0 até n-1 faça
+            para j <- 0 até n-1 faça
+                para k <- 0 até n-1 faça
+                    somaB <- somaB + B[i][j][k]
+                fim_para
+            fim_para
+        fim_para
+
+        se somaA >= somaB então retorne 1 senão retorne 0 fim_se
+    fim_funcao
+
+Expressão T(n): T(n) = A * n^3 + B * n^2 + C * n + D
+Big-O: O(n^3)
+Cálculo de Tempo (n=300): Tempo Teórico = 1,08 segundos.
+
+--------------------------------------------------------------------------------
+FUNÇÃO 4 (REFEITA): Análise de Casos Assimétricos (funcoes/funcao4.c)
+--------------------------------------------------------------------------------
+Pseudocódigo:
+    função processar_vetor(V, n):
+        somatorio <- 0                           // c1 (1 vez)
+        para i <- 0 até n-1 faça                 // c2 (n + 1 vezes)
+            se V[i] % 2 == 0 então               // c3 (n vezes)
+                somatorio <- somatorio + V[i]     // c4 (ramo par)
+            senão
+                fat <- 1                         // c5 (ramo ímpar)
+                para j <- 1 até V[i] faça        // c6 (V[i] + 1 vezes)
+                    fat <- fat * j               // c7 (V[i] vezes)
+                fim_para
+                somatorio <- somatorio + fat     // c8 (ramo ímpar)
+            fim_se
+        fim_para
+        retorne somatorio                       // c9 (1 vez)
+    fim_funcao
+
+Expressão T(n, m): T(n, m) = A * (n * m) + B * n + C
+Big-O: O(n) / O(n * m)
+Cálculo de Tempo (n=50.000 pior caso, m=20): Tempo Teórico = 0,010 segundos (10 ms).
+
+--------------------------------------------------------------------------------
+FUNÇÃO 5: Contagem de Elementos em Vetor Ordenado (funcoes/funcao5.c)
+--------------------------------------------------------------------------------
+Pseudocódigo:
+    função busca_binaria(B, n, chave):
+        inicio <- 0; fim <- n - 1
+        enquanto inicio <= fim faça
+            meio <- inicio + (fim - inicio) / 2
+            se B[meio] == chave então retorne 1
+            senão se B[meio] < chave então inicio <- meio + 1
+            senão fim <- meio - 1
+            fim_se
+        fim_enquanto
+        retorne 0
+    fim_funcao
+
+    função contagem_elementos_ordenados(A, B, n):
+        total_encontrados <- 0
+        para i <- 0 até n-1 faça
+            encontrado <- busca_binaria(B, n, A[i])
+            total_encontrados <- total_encontrados + encontrado
+        fim_para
+        retorne total_encontrados
+    fim_funcao
+
+Expressão T(n): T(n) = A * (n * log2(n)) + B * n + C
+Big-O: O(n log n)
+Cálculo de Tempo (n=10.000.000): Tempo Teórico = 2,33 segundos.
+
+================================================================================
+4. TABELA RESUMO COMPARATIVA (C99 MODULAR)
+================================================================================
+Função    | Arquivo Fonte       | n (Cálculo)         | Big-O      | Tempo Estimado
+--------------------------------------------------------------------------------
+Função 1  | funcoes/funcao1.c   | n=50.000, k=4.000   | O(k * n)   | 2,00 segundos
+Função 2  | funcoes/funcao2.c   | n=500               | O(n^2)     | 0,00626 s (6,26 ms)
+Função 3  | funcoes/funcao3.c   | n=300               | O(n^3)     | 1,08 segundos
+Função 4  | funcoes/funcao4.c   | n=50.000 (Pior Caso)| O(n)       | 0,010 s (10 ms)
+Função 5  | funcoes/funcao5.c   | n=10.000.000        | O(n log n) | 2,33 segundos
+================================================================================
