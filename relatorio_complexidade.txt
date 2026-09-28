@@ -5,11 +5,9 @@
 ================================================================================
 
 INTEGRANTES DO GRUPO:
-1. Pedro
-2. Paulo
-3. João
-4. Gabriel
-5. Lucas
+1. Pedro Henrique Figueiredo Lima - RGM 40111831
+2. Deyvid Lucas da Cunha Amorim - RGM 34040722
+3. Marcio Gomes
 
 ================================================================================
 1. CRITÉRIOS DA ANÁLISE

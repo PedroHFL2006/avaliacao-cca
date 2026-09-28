@@ -3,11 +3,9 @@
 Professor: Herriotr
 
 Integrantes:
-1. Pedro
-2. Paulo
-3. João
-4. Gabriel
-5. Lucas
+1. Pedro Henrique Figueiredo Lima - RGM 40111831
+2. Deyvid Lucas da Cunha Amorim - RGM 34040722
+3. Marcio Gomes
 
 ## Arquivos
 
@@ -26,5 +24,4 @@ O código usa C99 (VLA nos parâmetros, como pede o ATENÇÃO 03). No Dev-C++ an
 ## Menu
 
 - 1 a 5: executam cada função, com preenchimento manual ou aleatório, e imprimem os arranjos completos. Na Função 2, o preenchimento aleatório cria a matriz com a função do ATENÇÃO 01.
-- 6: benchmark do pior caso de cada função com os valores de n do enunciado.
-- 7: ATENÇÃO 01, pergunta linhas e colunas, cria a matriz dinâmica e preenche com valores aleatórios.
+- 6: ATENÇÃO 01, pergunta linhas e colunas, cria a matriz dinâmica e preenche com valores aleatórios.
