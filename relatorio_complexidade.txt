@@ -14,7 +14,8 @@ INTEGRANTES DO GRUPO:
 ================================================================================
 1. CRITÉRIOS DA ANÁLISE
 ================================================================================
-- Linguagem: C. Todo o código está no arquivo main.c.
+- Linguagem: C99, com VLA nos parâmetros das funções. Todo o código está
+  no arquivo main.c.
 - Cada linha do pseudocódigo executada custa 1 instrução.
 - Um laço "para" que repete x vezes tem a linha do cabeçalho executada
   x + 1 vezes (a última é o teste que encerra o laço). O mesmo vale para o
